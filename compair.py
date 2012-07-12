@@ -19,7 +19,7 @@ def compare_url_path(url, path) :
 		http.request(method="GET", url=url)
 		ret = http.getresponse()
 		if (int(ret.status) == 200) :
-			body = http.read()
+			body = ret.read()
 			m2.update(body)
 
 			if (m.digest() == m2.digest()) :
