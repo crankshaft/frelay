@@ -2,6 +2,7 @@ import os
 import sys
 import time
 import httplib
+import hashlib
 
 def post_file(body, dest) :
 	parse = dest.split('/')
@@ -16,6 +17,7 @@ def post_file(body, dest) :
 
 def relay_file(path, dst) :
 	try :
+		m = hashlib.md5()
 		if path[0:7] == "http://" :
 			body = "asdf"
 		else :
@@ -26,8 +28,14 @@ def relay_file(path, dst) :
 		if not body :
 			return False
 
+		m.update(body)
+
 		if dst[0:7] == "http://" :
-			return post_file(body, dst)
+			ret = post_file(body, dst)
+			if (ret == False) :
+				return False
+			else :
+				return m.hexdigest()
 		else :
 			return False
 	except :
@@ -50,7 +58,7 @@ def main() :
 
 		ret = relay_file(path, "http://localhost:8080/"+os.path.split(path)[1])
 		if ret :
-			print "succ:", path
+			print "succ:", path, ret
 		else :
 			print "failed:", path
 
